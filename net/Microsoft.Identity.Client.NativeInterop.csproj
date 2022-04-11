@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+
+		<RepoRootDir>$(MSBuildThisProjectDirectory)..\..\..\</RepoRootDir>
+
+		<IntermediateOutputPath>$(RepoRootDir)_builds\_interop\net\obj\$(Configuration)\$(MSBuildProjectName)\</IntermediateOutputPath>
+		<OutputPath>$(RepoRootDir)_builds\_interop\net\bin\$(Configuration)\$(MSBuildProjectName)\</OutputPath>
+		<OutDir>$(OutputPath)</OutDir>
+
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+
+		<!-- This is strong naming, not signing-->
+		<SignAssembly>true</SignAssembly>
+		<!-- The MSAL.snk has both private and public keys and SHOULD be included in all open source repos -->
+		<AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)/Microsoft.snk</AssemblyOriginatorKeyFile>
+		<!-- Do not use delay signing as it impacts contributors' ability to build -->
+		<DelaySign>false</DelaySign>
+
+	</PropertyGroup>
+
+	<PropertyGroup Label="Packaging">
+		<Version Condition="$(Version)==''">1.0.0</Version>
+		<IncludeSymbols>true</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Content Include="build\**\*" PackagePath="build" />
+		<Content Include="runtimes\**\*" PackagePath="runtimes" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content
+			Include="$(RepoRootDir)_install\*\bin\msalruntime.dll"
+			PackagePath="runtimes\win-x64\native\msalruntime.dll"
+			Link="runtimes\win-x64\native\msalruntime.dll" />
+
+		<Content
+			Include="$(RepoRootDir)_install\*\bin\msalruntime_x86.dll"
+			PackagePath="runtimes\win-x86\native\msalruntime_x86.dll"
+			Link="runtimes\win-x86\native\msalruntime_x86.dll" />
+	</ItemGroup>
+
+</Project>
